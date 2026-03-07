@@ -1,0 +1,266 @@
+@startuml Crown_Finance_Class_Diagram
+!theme default
+
+' Define Classes
+
+class User {
+  - user_id: int
+  - email_id: varchar
+  - password: varchar
+  - fullname: varchar
+  - contactno: varchar
+  - address: text
+  - status: varchar
+  - registrationdate: datetime
+  - lastlogindate: datetime
+  --
+  + login()
+  + registerUser()
+  + updateProfile()
+  + changePassword()
+  + logout()
+}
+
+class Account {
+  - account_id: int
+  - user_id: int
+  - accounttype: enum(Savings|Checking|Investment)
+  - accountname: varchar
+  - balance: float
+  - currency: varchar
+  - createddate: datetime
+  - status: varchar
+  --
+  + createAccount()
+  + getBalance()
+  + updateBalance()
+  + viewAccountDetails()
+}
+
+class Transaction {
+  - transaction_id: int
+  - account_id: int
+  - user_id: int
+  - transactiontype: varchar
+  - amount: float
+  - category_id: int
+  - description: text
+  - transactiondate: datetime
+  - status: varchar
+  --
+  + addTransaction()
+  + editTransaction()
+  + deleteTransaction()
+  + getTransactionHistory()
+  + calculateTotal()
+}
+
+class Category {
+  - category_id: int
+  - categoryname: varchar
+  - categorytype: varchar
+  - icon: varchar
+  - description: text
+  - status: varchar
+  --
+  + addCategory()
+  + viewCategory()
+  + editCategory()
+  + deleteCategory()
+}
+
+class Budget {
+  - budget_id: int
+  - user_id: int
+  - category_id: int
+  - budgetlimit: float
+  - startdate: date
+  - enddate: date
+  - spent_amount: float
+  - status: varchar
+  --
+  + createBudget()
+  + updateBudget()
+  + checkBudgetStatus()
+  + generateAlert()
+}
+
+class Goal {
+  - goal_id: int
+  - user_id: int
+  - goalname: varchar
+  - targetamount: float
+  - currentamount: float
+  - startdate: date
+  - targetdate: date
+  - status: varchar
+  --
+  + createGoal()
+  + updateGoalProgress()
+  + checkGoalStatus()
+  + completeGoal()
+}
+
+class Dashboard {
+  - dashboard_id: int
+  - user_id: int
+  - totalincome: float
+  - totalexpense: float
+  - netbalance: float
+  - last_updated: datetime
+  --
+  + generateAnalytics()
+  + getSummary()
+  + getCharts()
+  + refreshDashboard()
+}
+
+class Payment {
+  - payment_id: int
+  - user_id: int
+  - paymentmethod: varchar
+  - cardno: varchar
+  - expirydate: date
+  - cvv: varchar
+  - cardholder: varchar
+  - status: varchar
+  --
+  + addPaymentMethod()
+  + removePaymentMethod()
+  + validatePayment()
+  + processPayment()
+}
+
+class Notification {
+  - notification_id: int
+  - user_id: int
+  - notificationtype: varchar
+  - message: text
+  - createddate: datetime
+  - readstatus: boolean
+  - priority: varchar
+  --
+  + sendNotification()
+  + markAsRead()
+  + deleteNotification()
+  + getNotifications()
+}
+
+class AIInsight {
+  - insight_id: int
+  - user_id: int
+  - insighttype: varchar
+  - description: text
+  - recommendation: text
+  - confidencescore: float
+  - createddate: datetime
+  --
+  + generateInsight()
+  + analyzeSpending()
+  + predictTrend()
+  + getSuggestions()
+}
+
+class Report {
+  - report_id: int
+  - user_id: int
+  - reporttype: varchar
+  - startdate: date
+  - enddate: date
+  - generateddate: datetime
+  - fileformat: varchar
+  - status: varchar
+  --
+  + generateReport()
+  + exportReport()
+  + viewReport()
+  + downloadReport()
+}
+
+class UserProfile {
+  - profile_id: int
+  - user_id: int
+  - firstname: varchar
+  - lastname: varchar
+  - profilepic: varchar
+  - phoneno: varchar
+  - address: text
+  - city: varchar
+  - country: varchar
+  - pincode: varchar
+  - status: varchar
+  --
+  + updateProfile()
+  + uploadProfilePic()
+  + viewProfile()
+  + deleteAccount()
+}
+
+class Feedback {
+  - feedback_id: int
+  - user_id: int
+  - feedbacktype: varchar
+  - message: text
+  - rating: int
+  - createddate: datetime
+  - status: varchar
+  --
+  + submitFeedback()
+  + rateFeedback()
+  + viewFeedback()
+  + respondToFeedback()
+}
+
+' Define Relationships
+
+User "1" -- "*" Account : owns
+User "1" -- "*" Transaction : creates
+User "1" -- "*" Budget : sets
+User "1" -- "*" Goal : creates
+User "1" -- "1" Dashboard : has
+User "1" -- "*" Payment : uses
+User "1" -- "*" Notification : receives
+User "1" -- "*" AIInsight : receives
+User "1" -- "*" Report : generates
+User "1" -- "1" UserProfile : maintains
+User "1" -- "*" Feedback : provides
+
+Account "1" -- "*" Transaction : contains
+Account "1" -- "*" Budget : linked_to
+Category "1" -- "*" Transaction : classifies
+Category "1" -- "*" Budget : applies_to
+Dashboard --> Transaction : displays
+Dashboard --> Account : shows
+Dashboard --> Budget : monitors
+Report --> Transaction : analyzes
+Report --> Account : summarizes
+Report --> Goal : tracks
+
+note right of User
+  Central entity for all operations
+  Authentication via JWT
+  Manages all financial data
+end note
+
+note right of Account
+  Can be Savings, Checking, or Investment
+  Tracks balance in specified currency
+end note
+
+note right of Budget
+  Monthly/Category-wise spending limits
+  Generates alerts when exceeded
+end note
+
+note right of Goal
+  Financial targets with timelines
+  Progress tracked via transactions
+end note
+
+note right of AIInsight
+  Powered by ML algorithms
+  Analyzes spending patterns
+  Provides recommendations
+end note
+
+@enduml
